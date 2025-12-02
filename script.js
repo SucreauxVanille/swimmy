@@ -5,15 +5,15 @@ const ctx = canvas.getContext("2d");
 const baseWidth = 800;
 const baseHeight = 600;
 
-// キャンバスサイズを画面に合わせる
+// キャンバスサイズを画面いっぱいに設定し、スケールを計算
+let scale = 1;
 function resizeCanvas() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 
-  // スケール計算（縦横比を保った最小スケール）
+  // scale = 基準サイズに対する倍率
   scale = Math.min(canvas.width / baseWidth, canvas.height / baseHeight);
 }
-let scale = 1;
 resizeCanvas();
 window.addEventListener("resize", resizeCanvas);
 
@@ -45,7 +45,6 @@ class Player {
     this.x += this.dx * scale;
     this.y += this.dy * scale;
 
-    // 画面端制限
     this.x = Math.max(0, Math.min(canvas.width - this.width * scale, this.x));
     this.y = Math.max(0, Math.min(canvas.height - this.height * scale, this.y));
   }
@@ -66,8 +65,8 @@ class RedFish {
     this.width = 72;
     this.height = 36;
     this.x = canvas.width + 20;
-    this.y = Math.random() * (canvas.height - this.height);
-    this.baseSpeed = 2 + Math.random() * 1.5; // 2〜3.5
+    this.y = Math.random() * (canvas.height - this.height * scale);
+    this.baseSpeed = 2 + Math.random() * 1.5;
   }
 
   update() {
@@ -139,4 +138,34 @@ function loop() {
 
   // 赤い魚更新
   for (let i = redFishes.length - 1; i >= 0; i--) {
-    const fish = redFishe
+    const fish = redFishes[i];
+    fish.update();
+    fish.draw();
+
+    if (fish.x < -fish.width * scale) {
+      redFishes.splice(i, 1);
+      continue;
+    }
+
+    if (checkCollision(player, fish)) {
+      redFishes.splice(i, 1);
+      score++;
+      scoreEl.textContent = `Score: ${score}`;
+    }
+  }
+
+  // 赤い魚スポーン
+  spawnTimer++;
+  if (spawnTimer > spawnInterval) {
+    spawnRedFish();
+    spawnTimer = 0;
+  }
+}
+
+// 画像ロード後に開始
+playerImg.onload = () => {
+  redImg.onload = () => {
+    loop();
+  };
+};
+
