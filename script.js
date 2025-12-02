@@ -11,7 +11,6 @@ function resizeCanvas() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 
-  // scale = 基準サイズに対する倍率
   scale = Math.min(canvas.width / baseWidth, canvas.height / baseHeight);
 }
 resizeCanvas();
@@ -58,7 +57,7 @@ class Player {
   }
 }
 
-// 赤い魚クラス
+// 赤い魚クラス（スポーン用）
 class RedFish {
   constructor(img) {
     this.img = img;
@@ -85,6 +84,8 @@ class RedFish {
 // プレイヤー初期化
 const player = new Player(playerImg);
 const redFishes = [];
+const followers = []; // スネーク型の仲間リスト
+const maxFollowers = 10; // 最大追従数
 
 // 赤い魚スポーン
 let spawnTimer = 0;
@@ -92,6 +93,13 @@ const spawnInterval = 80;
 
 function spawnRedFish() {
   redFishes.push(new RedFish(redImg));
+}
+
+// 追従仲間を追加
+function addFollower() {
+  if (followers.length >= maxFollowers) return;
+  const last = followers.length ? followers[followers.length - 1] : player;
+  followers.push({ x: last.x, y: last.y, width: 72, height: 36 });
 }
 
 // 当たり判定（長方形）
@@ -151,7 +159,20 @@ function loop() {
       redFishes.splice(i, 1);
       score++;
       scoreEl.textContent = `Score: ${score}`;
+      addFollower(); // 追従仲間を追加
     }
+  }
+
+  // スネーク型追従描画
+  for (let i = 0; i < followers.length; i++) {
+    const target = i === 0 ? player : followers[i - 1];
+    const follower = followers[i];
+
+    // 線形補間で追従
+    follower.x += (target.x - follower.x) * 0.2;
+    follower.y += (target.y - follower.y) * 0.2;
+
+    ctx.drawImage(redImg, follower.x, follower.y, follower.width * scale, follower.height * scale);
   }
 
   // 赤い魚スポーン
@@ -168,4 +189,3 @@ playerImg.onload = () => {
     loop();
   };
 };
-
