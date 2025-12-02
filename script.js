@@ -163,17 +163,26 @@ function loop() {
     }
   }
 
-  // スネーク型追従描画
-  for (let i = 0; i < followers.length; i++) {
-    const target = i === 0 ? player : followers[i - 1];
-    const follower = followers[i];
+// スネーク型追従描画
+for (let i = 0; i < followers.length; i++) {
+  const target = i === 0 ? player : followers[i - 1];
+  const follower = followers[i];
 
-    // 線形補間で追従
-    follower.x += (target.x - follower.x) * 0.2;
-    follower.y += (target.y - follower.y) * 0.2;
+  // 線形補間で追従
+  follower.x += (target.x - follower.x) * 0.2;
+  follower.y += (target.y - follower.y) * 0.2;
 
-    ctx.drawImage(redImg, follower.x, follower.y, follower.width * scale, follower.height * scale);
-  }
+  // 左右反転で描画
+  ctx.save();
+  ctx.translate(follower.x + follower.width * scale, follower.y);
+  ctx.scale(-1, 1);
+  ctx.drawImage(redImg, 0, 0, follower.width * scale, follower.height * scale);
+  ctx.restore();
+}
+
+// プレイヤーを最後に描画
+player.draw();
+
 
   // 赤い魚スポーン
   spawnTimer++;
