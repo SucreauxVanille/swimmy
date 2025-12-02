@@ -85,7 +85,7 @@ class RedFish {
 const player = new Player(playerImg);
 const redFishes = [];
 const followers = []; // スネーク型の仲間リスト
-const maxFollowers = 10; // 最大追従数
+const maxFollowers = 30; // 最大追従数
 
 // 赤い魚スポーン
 let spawnTimer = 0;
