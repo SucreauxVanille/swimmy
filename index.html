@@ -8,10 +8,13 @@
       margin: 0;
       padding: 0;
       overflow: hidden;
-      touch-action: none; /* スマホのスクロールを防ぐ */
+      height: 100%; /* 追加 */
+      touch-action: none; /* スマホのスクロール防止 */
     }
     canvas {
       display: block;
+      width: 100%;   /* 追加：表示サイズを画面いっぱいに */
+      height: 100%;  /* 追加：表示サイズを画面いっぱいに */
       background-color: #87ceeb; /* 水色 */
     }
     #score {
@@ -22,6 +25,7 @@
       color: #fff;
       font-family: sans-serif;
       text-shadow: 1px 1px 2px #000;
+      z-index: 10;
     }
   </style>
 </head>
@@ -31,3 +35,4 @@
   <script src="script.js"></script>
 </body>
 </html>
+
