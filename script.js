@@ -5,22 +5,25 @@ const ctx = canvas.getContext("2d");
 const baseWidth = 800;
 const baseHeight = 600;
 
-// スコアのフォントサイズを更新
-function updateScoreFont() {
-  let size = 24 * scale;        // 基準24px × scale
-  size = Math.max(16, size);    // 最小16px
-  size = Math.min(48, size);    // 最大48px
-  scoreEl.style.fontSize = `${size}px`;
-}
+// スコア
+let score = 0;
+const scoreEl = document.getElementById("score"); // 先に取得
 
-// キャンバスリサイズ時にスコアフォントも更新
+// キャンバスサイズを画面いっぱいに設定し、スケールを計算
 let scale = 1;
 function resizeCanvas() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 
   scale = Math.min(canvas.width / baseWidth, canvas.height / baseHeight);
-  updateScoreFont(); // フォントサイズ更新
+
+  // スコアフォント更新
+  if (scoreEl) {
+    let size = 24 * scale;       // 基準24px × scale
+    size = Math.max(16, size);   // 最小16px
+    size = Math.min(48, size);   // 最大48px
+    scoreEl.style.fontSize = `${size}px`;
+  }
 }
 resizeCanvas();
 window.addEventListener("resize", resizeCanvas);
@@ -31,10 +34,6 @@ playerImg.src = "swimmy.gif";
 
 const redImg = new Image();
 redImg.src = "red.gif";
-
-// スコア
-let score = 0;
-const scoreEl = document.getElementById("score");
 
 // プレイヤークラス
 class Player {
@@ -94,7 +93,7 @@ class RedFish {
 const player = new Player(playerImg);
 const redFishes = [];
 const followers = []; // スネーク型の仲間リスト
-const maxFollowers = 30; // 最大追従数
+const maxFollowers = 10; // 最大追従数（動作確認用）
 
 // 赤い魚スポーン
 let spawnTimer = 0;
@@ -134,7 +133,6 @@ canvas.addEventListener("touchmove", e => {
   player.y = touch.clientY - (player.height * scale) / 2;
 });
 
-
 // 描画ループ
 function loop() {
   requestAnimationFrame(loop);
@@ -152,7 +150,6 @@ function loop() {
   if (keys["ArrowDown"]) player.dy = player.speed;
 
   player.update();
-  player.draw();
 
   // 赤い魚更新
   for (let i = redFishes.length - 1; i >= 0; i--) {
@@ -168,31 +165,29 @@ function loop() {
     if (checkCollision(player, fish)) {
       redFishes.splice(i, 1);
       score++;
-      scoreEl.textContent = `Score: ${score}`;
-      addFollower(); // 追従仲間を追加
+      if (scoreEl) scoreEl.textContent = `Score: ${score}`;
+      addFollower();
     }
   }
 
-// スネーク型追従描画
-for (let i = 0; i < followers.length; i++) {
-  const target = i === 0 ? player : followers[i - 1];
-  const follower = followers[i];
+  // スネーク型追従描画
+  for (let i = 0; i < followers.length; i++) {
+    const target = i === 0 ? player : followers[i - 1];
+    const follower = followers[i];
 
-  // 線形補間で追従
-  follower.x += (target.x - follower.x) * 0.2;
-  follower.y += (target.y - follower.y) * 0.2;
+    follower.x += (target.x - follower.x) * 0.2;
+    follower.y += (target.y - follower.y) * 0.2;
 
-  // 左右反転で描画
-  ctx.save();
-  ctx.translate(follower.x + follower.width * scale, follower.y);
-  ctx.scale(-1, 1);
-  ctx.drawImage(redImg, 0, 0, follower.width * scale, follower.height * scale);
-  ctx.restore();
-}
+    // 左右反転で描画
+    ctx.save();
+    ctx.translate(follower.x + follower.width * scale, follower.y);
+    ctx.scale(-1, 1);
+    ctx.drawImage(redImg, 0, 0, follower.width * scale, follower.height * scale);
+    ctx.restore();
+  }
 
-// プレイヤーを最後に描画
-player.draw();
-
+  // プレイヤーを最後に描画（手前）
+  player.draw();
 
   // 赤い魚スポーン
   spawnTimer++;
