@@ -125,6 +125,24 @@ canvas.addEventListener("touchmove", e => {
   player.y = touch.clientY - (player.height * scale) / 2;
 });
 
+// スコアのフォントサイズを更新
+function updateScoreFont() {
+  let size = 24 * scale;        // 基準24px × scale
+  size = Math.max(16, size);    // 最小16px
+  size = Math.min(48, size);    // 最大48px
+  scoreEl.style.fontSize = `${size}px`;
+}
+
+// キャンバスリサイズ時にスコアフォントも更新
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  scale = Math.min(canvas.width / baseWidth, canvas.height / baseHeight);
+  updateScoreFont(); // フォントサイズ更新
+}
+
+
 // 描画ループ
 function loop() {
   requestAnimationFrame(loop);
