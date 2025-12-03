@@ -5,13 +5,22 @@ const ctx = canvas.getContext("2d");
 const baseWidth = 800;
 const baseHeight = 600;
 
-// キャンバスサイズを画面いっぱいに設定し、スケールを計算
+// スコアのフォントサイズを更新
+function updateScoreFont() {
+  let size = 24 * scale;        // 基準24px × scale
+  size = Math.max(16, size);    // 最小16px
+  size = Math.min(48, size);    // 最大48px
+  scoreEl.style.fontSize = `${size}px`;
+}
+
+// キャンバスリサイズ時にスコアフォントも更新
 let scale = 1;
 function resizeCanvas() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 
   scale = Math.min(canvas.width / baseWidth, canvas.height / baseHeight);
+  updateScoreFont(); // フォントサイズ更新
 }
 resizeCanvas();
 window.addEventListener("resize", resizeCanvas);
@@ -124,23 +133,6 @@ canvas.addEventListener("touchmove", e => {
   player.x = touch.clientX - (player.width * scale) / 2;
   player.y = touch.clientY - (player.height * scale) / 2;
 });
-
-// スコアのフォントサイズを更新
-function updateScoreFont() {
-  let size = 24 * scale;        // 基準24px × scale
-  size = Math.max(16, size);    // 最小16px
-  size = Math.min(48, size);    // 最大48px
-  scoreEl.style.fontSize = `${size}px`;
-}
-
-// キャンバスリサイズ時にスコアフォントも更新
-function resizeCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-
-  scale = Math.min(canvas.width / baseWidth, canvas.height / baseHeight);
-  updateScoreFont(); // フォントサイズ更新
-}
 
 
 // 描画ループ
