@@ -19,9 +19,9 @@ function resizeCanvas() {
 
   // スコアフォント更新
   if (scoreEl) {
-    let size = 24 * scale;       // 基準24px × scale
-    size = Math.max(16, size);   // 最小16px
-    size = Math.min(48, size);   // 最大48px
+    let size = 36 * scale;       // 基準36px × scale
+    size = Math.max(24, size);   // 最小24px
+    size = Math.min(60, size);   // 最大60px
     scoreEl.style.fontSize = `${size}px`;
   }
 }
