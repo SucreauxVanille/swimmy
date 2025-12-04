@@ -65,10 +65,25 @@ window.addEventListener("resize", resizeCanvas);
 
 // 画像ロード
 const playerImg = new Image();
-playerImg.src = "swimmy.gif";
-
 const redImg = new Image();
+
+// ---------------------------
+// 画像読み込み簡易チェック
+let loadedCount = 0;
+function checkLoaded() {
+  loadedCount++;
+  if (loadedCount === 2) {
+    // 両方読み込み完了でゲーム開始
+    loop();
+  }
+}
+playerImg.onload = checkLoaded;
+redImg.onload = checkLoaded;
+
+// src の代入は onload 設定後
+playerImg.src = "swimmy.gif";
 redImg.src = "red.gif";
+
 
 // プレイヤークラス
 class Player {
@@ -232,10 +247,3 @@ if (bgCanvas) {
     spawnTimer = 0;
   }
 }
-
-// 画像ロード後に開始
-playerImg.onload = () => {
-  redImg.onload = () => {
-    loop();
-  };
-};
