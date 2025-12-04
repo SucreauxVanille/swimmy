@@ -19,7 +19,7 @@ function makeBackground() {
   bgCanvas.width = canvas.width;
   bgCanvas.height = canvas.height;
 
-  const layerHeight = 36; // 階段の高さ（あなたの指定通り）
+  const layerHeight = 48; // 階段の高さ
 
   // ベース色（最浅層）
   let hue = 200;  // 青より
