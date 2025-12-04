@@ -23,8 +23,8 @@ function makeBackground() {
 
   // ベース色（最浅層）
   let hue = 200;  // 青より
-  let sat = 70;   // 少し彩度高め
-  let light = 70; // 明るさ
+  let sat = 75;   // 少し彩度高め
+  let light = 90; // 明るさ
 
   // 各層ごとの変化量
   const hueShift = -1.2; // 緑方向へ（青→緑）
